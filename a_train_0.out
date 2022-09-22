@@ -1,0 +1,79 @@
+Total number of sequences: 60
+  0%|          | 0/60 [00:00<?, ?it/s]  2%|▏         | 1/60 [00:20<20:22, 20.73s/it]  8%|▊         | 5/60 [00:23<03:23,  3.70s/it] 13%|█▎        | 8/60 [00:30<02:38,  3.05s/it] 17%|█▋        | 10/60 [00:34<02:14,  2.70s/it] 23%|██▎       | 14/60 [00:52<02:43,  3.56s/it] 28%|██▊       | 17/60 [00:55<01:57,  2.73s/it] 35%|███▌      | 21/60 [01:03<01:33,  2.40s/it] 70%|███████   | 42/60 [01:05<00:12,  1.46it/s] 72%|███████▏  | 43/60 [01:11<00:16,  1.03it/s] 75%|███████▌  | 45/60 [01:30<00:29,  1.96s/it] 80%|████████  | 48/60 [01:36<00:24,  2.02s/it] 82%|████████▏ | 49/60 [01:41<00:24,  2.25s/it] 93%|█████████▎| 56/60 [01:43<00:05,  1.29s/it] 95%|█████████▌| 57/60 [01:45<00:04,  1.41s/it]100%|██████████| 60/60 [01:45<00:00,  1.76s/it]
+num of centerline: 8
+0 planning iteration,frenet cost in one centerline:0.530892,average cost is 0.000000
+0 planning iteration,frenet cost in one centerline:0.689114,average cost is 0.000000
+6 planning iteration,frenet cost in one centerline:1.367351,average cost is 0.227892
+22 planning iteration,frenet cost in one centerline:0.863141,average cost is 0.039234
+28 planning iteration,frenet cost in one centerline:1.613503,average cost is 0.057625
+35 planning iteration,frenet cost in one centerline:1.533961,average cost is 0.043827
+407 planning iteration,frenet cost in one centerline:6.350292,average cost is 0.015603
+185 planning iteration,frenet cost in one centerline:5.566176,average cost is 0.030087
+time cost per scene: 20.726875066757202
+num of centerline: 3
+35 planning iteration,frenet cost in one centerline:1.150833,average cost is 0.032881
+35 planning iteration,frenet cost in one centerline:0.775283,average cost is 0.022151
+35 planning iteration,frenet cost in one centerline:0.764094,average cost is 0.021831
+time cost per scene: 2.86970591545105
+num of centerline: 3
+17 planning iteration,frenet cost in one centerline:1.754139,average cost is 0.103185
+35 planning iteration,frenet cost in one centerline:2.927715,average cost is 0.083649
+29 planning iteration,frenet cost in one centerline:2.129123,average cost is 0.073418
+time cost per scene: 7.038675785064697
+num of centerline: 2
+35 planning iteration,frenet cost in one centerline:2.191322,average cost is 0.062609
+19 planning iteration,frenet cost in one centerline:1.448286,average cost is 0.076226
+time cost per scene: 3.8381659984588623
+num of centerline: 5
+35 planning iteration,frenet cost in one centerline:2.608611,average cost is 0.074532
+35 planning iteration,frenet cost in one centerline:3.241503,average cost is 0.092614
+35 planning iteration,frenet cost in one centerline:5.608168,average cost is 0.160233
+35 planning iteration,frenet cost in one centerline:4.014416,average cost is 0.114698
+21 planning iteration,frenet cost in one centerline:2.370893,average cost is 0.112900
+time cost per scene: 18.121039867401123
+num of centerline: 3
+29 planning iteration,frenet cost in one centerline:1.135815,average cost is 0.039166
+26 planning iteration,frenet cost in one centerline:0.865809,average cost is 0.033300
+35 planning iteration,frenet cost in one centerline:0.982519,average cost is 0.028072
+time cost per scene: 3.205950975418091
+num of centerline: 4
+35 planning iteration,frenet cost in one centerline:1.958202,average cost is 0.055949
+35 planning iteration,frenet cost in one centerline:1.920974,average cost is 0.054885
+35 planning iteration,frenet cost in one centerline:1.839925,average cost is 0.052569
+18 planning iteration,frenet cost in one centerline:1.554562,average cost is 0.086365
+time cost per scene: 7.532041311264038
+num of centerline: 1
+35 planning iteration,frenet cost in one centerline:1.864569,average cost is 0.053273
+time cost per scene: 2.044010877609253
+num of centerline: 4
+20 planning iteration,frenet cost in one centerline:1.382839,average cost is 0.069142
+35 planning iteration,frenet cost in one centerline:2.139877,average cost is 0.061139
+19 planning iteration,frenet cost in one centerline:1.304031,average cost is 0.068633
+35 planning iteration,frenet cost in one centerline:1.547089,average cost is 0.044203
+time cost per scene: 6.590055704116821
+num of centerline: 5
+33 planning iteration,frenet cost in one centerline:3.321618,average cost is 0.100655
+27 planning iteration,frenet cost in one centerline:2.413388,average cost is 0.089385
+70 planning iteration,frenet cost in one centerline:4.895029,average cost is 0.069929
+35 planning iteration,frenet cost in one centerline:4.047852,average cost is 0.115653
+35 planning iteration,frenet cost in one centerline:3.357530,average cost is 0.095929
+time cost per scene: 18.35609221458435
+num of centerline: 2
+35 planning iteration,frenet cost in one centerline:3.762900,average cost is 0.107511
+18 planning iteration,frenet cost in one centerline:2.688749,average cost is 0.149375
+time cost per scene: 6.674726963043213
+num of centerline: 4
+16 planning iteration,frenet cost in one centerline:0.806060,average cost is 0.050379
+17 planning iteration,frenet cost in one centerline:0.732626,average cost is 0.043096
+35 planning iteration,frenet cost in one centerline:1.012534,average cost is 0.028930
+35 planning iteration,frenet cost in one centerline:1.870388,average cost is 0.053440
+time cost per scene: 4.657804012298584
+num of centerline: 2
+35 planning iteration,frenet cost in one centerline:0.799226,average cost is 0.022835
+19 planning iteration,frenet cost in one centerline:0.536155,average cost is 0.028219
+time cost per scene: 1.5166411399841309
+num of centerline: 3
+35 planning iteration,frenet cost in one centerline:0.995015,average cost is 0.028429
+35 planning iteration,frenet cost in one centerline:0.785608,average cost is 0.022446
+27 planning iteration,frenet cost in one centerline:0.678306,average cost is 0.025122
+time cost per scene: 2.640994071960449
