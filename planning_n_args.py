@@ -17,10 +17,8 @@ from utils.others import process_input, process_xy, sample_speed, process_xy_bac
 from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
 import os
 import warnings
-from concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor,as_completed
 
-
-
+import argparse
 
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 from multiprocessing import Pool
@@ -270,25 +268,26 @@ def model_generator(avm, data, start):
 def multi_run_wrapper(args):
     return model_generator(*args)
 
-def pipeline(path_name_ext):
-    #avm, afl, path_name_ext, save_dir = parameter_list
-    afl_ = afl.get(path_name_ext)
-    path, name_ext = os.path.split(path_name_ext)
-    name, ext = os.path.splitext(name_ext)
-    time_begin = time.time()
-    save_centerline, generate_traj = model_generator(avm, afl_.seq_df, 20)
-    data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
-    torch.save(data_dict, os.path.join(save_dir, name + ".path"))
-    time_cost = time.time() - time_begin
-    result_info_dict = {"scene_name":path_name_ext,"time":time_cost}
-    print("time cost per scene:", time_cost)
-    return result_info_dict
-
 
 if __name__ == "__main__":
     ##set root_dir to the correct path to your dataset folder
-    root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
-    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test_multiprocess'
+    def parse_args():
+
+        parser = argparse.ArgumentParser(description='Evaluate the mmTransformer')
+        parser.add_argument('--root_dir', type=str, default=None)
+        parser.add_argument('--save_dir', type=str, default=None )
+        parser.add_argument('--start_num', type=int, default=0)
+        parser.add_argument('--end_num', type=int, default=0)
+
+        args = parser.parse_args()
+
+        return args
+
+    args = parse_args()
+    root_dir = args.root_dir#'/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
+    save_dir = args.save_dir#'/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test'
+    start_num = args.start_num
+    end_num = args.end_num
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     # name=os.listdir(root_dir)
@@ -299,19 +298,18 @@ if __name__ == "__main__":
     print('Total number of sequences:', len(afl))
     info_dict = []
     check_list = ["52", "39", "60"]
-    #executor = ThreadPoolExecutor(max_workers=4)
-    executor = ProcessPoolExecutor(max_workers=4)
-    # for path_name_ext in tqdm(afl.seq_list):
-    #     single_num = path_name_ext.parts[-1].split(".")[0]
-    #     # if not single_num in check_list:
-    #     #     continue
-    #     pipeline(avm,afl,path_name_ext,save_dir)
-
-    futures = [executor.submit(pipeline,path_name_ext) for path_name_ext in afl.seq_list]
-    for future in as_completed(futures):
-        # retrieve the result
-        result = future.result()
-        print(result)
+    for path_name_ext in tqdm(afl.seq_list):
+        single_num = path_name_ext.parts[-1].split(".")[0]
+        if (int(single_num) > start_num) and (int(single_num) < end_num):
+            afl_ = afl.get(path_name_ext)
+            path, name_ext = os.path.split(path_name_ext)
+            name, ext = os.path.splitext(name_ext)
+            time_begin = time.time()
+            save_centerline, generate_traj = model_generator(avm, afl_.seq_df, 20)
+            data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
+            torch.save(data_dict, os.path.join(save_dir, name + ".path"))
+            time_cost = time.time() - time_begin
+            print("time cost per scene:", time_cost)
 
     # model_generator()
     # model_generator()
