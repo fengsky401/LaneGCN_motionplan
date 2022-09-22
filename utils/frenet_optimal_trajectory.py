@@ -21,6 +21,7 @@ import copy
 import math
 import sys
 import os
+import time
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "QuinticPolynomialsPlanner/")
@@ -37,11 +38,11 @@ SIM_LOOP = 500
 MAX_SPEED = 40 # maximum speed [m/s] ## it was 100/3.6
 MAX_ACCEL = 8.0  # maximum acceleration [m/ss]
 MAX_CURVATURE = 3.0  # maximum curvature [1/m]
-MAX_ROAD_WIDTH = 7.0  # maximum road width [m]
+MAX_ROAD_WIDTH = 1.9#3.8#7.0  # maximum road width [m]
 D_ROAD_W = 1.0  # road width sampling length [m]
 DT = 0.2  # time tick [s]
-MAX_T = 5.0  # max prediction time [m]
-MIN_T = 4.0  # min prediction time [m]
+MAX_T = 3.1#5.0  # max prediction time [m]
+MIN_T = 3.0  # min prediction time [m]
 TARGET_SPEED = 30.0 / 3.6  # target speed [m/s]
 D_T_S = 5.0 / 3.6  # target speed sampling length [m/s]
 N_S_SAMPLE = 1  # sampling number of target speed
@@ -233,9 +234,19 @@ def check_paths(fplist, ob):
 
 
 def frenet_optimal_planning(csp, s0, c_speed, c_d, c_d_d, c_d_dd, ob,target_speed):
+    frenet_begin = time.time()
     fplist = calc_frenet_paths(c_speed, c_d, c_d_d, c_d_dd, s0,target_speed)
+    frenet_cost = time.time() - frenet_begin
+
+    global_begin = time.time()
     fplist = calc_global_paths(fplist, csp)
+    global_cost = time.time() - global_begin
+
+    check_begin = time.time()
     fplist = check_paths(fplist, ob)
+    check_cost = time.time() - check_begin
+
+    #print("frenet cost:%f,global calc cost:%f,check cost:%f" %(frenet_cost,global_cost,check_cost))
 
     # find minimum cost path
     min_cost = float("inf")

@@ -77,10 +77,11 @@ def sample_speed(data):
     '''
     if data>33:
         data = 33
-    v_range_l = max(0,data-2.78*3)
+    v_range_l = max(0,data-2.5*3)
     v_range_r = min(33,data+2.78*3)
     speed_data = np.arange(v_range_l, v_range_r, 0.05)
-    print("speed data:",speed_data)
+    #print("max speed:%f,min speed:%f" %(speed_data[0],speed_data[-1]))
+    #print("speed data:",speed_data)
     return np.random.choice(speed_data)
 
 

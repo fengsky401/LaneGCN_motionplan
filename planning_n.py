@@ -191,14 +191,13 @@ def model_generator(avm,data,start):
                             try:
                                 path = frenet_optimal_planning(
                                             csp, s0, c_speed, c_d, c_d_d, c_d_dd, ob=ob_,target_speed=target_speed)
-                                #print("k:%d,s0:%f,c_speed:%f,c_d:%f,c_d_d:%f,c_d_dd:%f,target_speed:%f" %(k,s0,c_speed,c_d,c_d_d,c_d_dd,target_speed))
+                                # if k%10 == 0 and (k>0):
+                                #     print("k:%d,s0:%f,c_speed:%f,c_d:%f,c_d_d:%f,c_d_dd:%f,target_speed:%f" %(k,s0,c_speed,c_d,c_d_d,c_d_dd,target_speed))
                             except:
                                 break
                             if path is None:
                                 break
 
-                            #print("pathx:",path.x)
-                            #print("pathy:",path.y)
 
                             once_time_cost = time.time() - one_loop_begin
                             #print("once time cost:",once_time_cost)
@@ -266,7 +265,7 @@ def multi_run_wrapper(args):
 if  __name__ == "__main__":
     ##set root_dir to the correct path to your dataset folder
     root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
-    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/train'
+    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test'
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     #name=os.listdir(root_dir)
@@ -276,7 +275,11 @@ if  __name__ == "__main__":
     afl = Afl(root_dir)
     print('Total number of sequences:', len(afl))
     info_dict = []
+    check_list = ["52","39","60"]
     for path_name_ext in tqdm(afl.seq_list):
+        single_num = path_name_ext.parts[-1].split(".")[0]
+        # if not single_num in check_list:
+        #     continue
         afl_ = afl.get(path_name_ext)
         path, name_ext = os.path.split(path_name_ext)
         name, ext = os.path.splitext(name_ext)
