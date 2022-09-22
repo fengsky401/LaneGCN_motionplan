@@ -287,8 +287,14 @@ def pipeline(path_name_ext):
 
 if __name__ == "__main__":
     ##set root_dir to the correct path to your dataset folder
+<<<<<<< Updated upstream
     root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
     save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test_multiprocess'
+=======
+    root_dir = "/data/public/argoverse_data/train/data"#'/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
+
+    save_dir = "./data_av1/save_train_frenet/train"#'/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/train'
+>>>>>>> Stashed changes
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
     # name=os.listdir(root_dir)
@@ -298,6 +304,7 @@ if __name__ == "__main__":
     afl = Afl(root_dir)
     print('Total number of sequences:', len(afl))
     info_dict = []
+<<<<<<< Updated upstream
     check_list = ["52", "39", "60"]
     #executor = ThreadPoolExecutor(max_workers=4)
     executor = ProcessPoolExecutor(max_workers=4)
@@ -312,6 +319,15 @@ if __name__ == "__main__":
         # retrieve the result
         result = future.result()
         print(result)
+=======
+
+
+    executor = ThreadPoolExecutor(max_workers = 24)
+    for path_name_ext in tqdm(afl.seq_list):
+        args = [path_name_ext,afl,save_dir]
+        #a = executor.submit(lambda p:pipeline(*p),args)
+        pipeline(path_name_ext,afl,save_dir)
+>>>>>>> Stashed changes
 
     # model_generator()
     # model_generator()

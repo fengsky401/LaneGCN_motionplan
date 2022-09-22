@@ -19,7 +19,7 @@ import numpy as np
 MAX_T = 100.0  # maximum time to the goal [s]
 MIN_T = 5.0  # minimum time to the goal[s]
 
-show_animation = True
+show_animation = False
 
 
 class QuinticPolynomial:

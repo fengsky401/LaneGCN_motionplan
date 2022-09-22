@@ -1,28 +1,34 @@
 from logging import root
 from argoverse.data_loading.argoverse_forecasting_loader import ArgoverseForecastingLoader
-from utils.map_features_utils import MapFeaturesUtils
-from utils.visualize_sequences import interpolate_polyline, viz_sequence
-import pickle as p
-import matplotlib.pyplot as plt
+#from utils.map_features_utils import MapFeaturesUtils
+#from utils.visualize_sequences import interpolate_polyline, viz_sequence
+#import pickle as p
+#import matplotlib.pyplot as plt
 from argoverse.map_representation.map_api import ArgoverseMap
 import numpy as np
-import torch
+#import torch
 from utils.others import process_input, process_xy, process_xy_back
-from pykalman import KalmanFilter
-from scipy import poly1d
-from pykalman import KalmanFilter
+#from pykalman import KalmanFilter
+#from scipy import poly1d
+#from pykalman import KalmanFilter
 from argoverse.map_representation.map_api import ArgoverseMap
-from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction, \
-    generate_offset, convert_to_frenet, close_list_index, cal_dist, cal_paral, cal_speed_list, inc_length
-from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
+#from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction, \
+#    generate_offset, convert_to_frenet, close_list_index, cal_dist, cal_paral, cal_speed_list, inc_length
+#from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
 import os
-import warnings
+
+os.environ["OMP_NUM_THREADS"] = "1" # export OMP_NUM_THREADS=1
+os.environ["OPENBLAS_NUM_THREADS"] = "1" # export OPENBLAS_NUM_THREADS=1
+os.environ["MKL_NUM_THREADS"] = "1" # export MKL_NUM_THREADS=1
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1" # export VECLIB_MAXIMUM_THREADS=1
+os.environ["NUMEXPR_NUM_THREADS"] = "1" # export NUMEXPR_NUM_THREADS=1
+#import warnings
 
 import argparse
 
-warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
-from multiprocessing import Pool
-from itertools import product
+#warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+#from multiprocessing import Pool
+#from itertools import product
 from tqdm import tqdm
 import time
 
@@ -50,6 +56,7 @@ def model_generator(avm, data, start):
     observation_matrix = [[1, 0, 0, 0],
                           [0, 0, 1, 0]]
 
+    '''
     kf1 = KalmanFilter(transition_matrices=transition_matrix,
                        observation_matrices=observation_matrix,
                        initial_state_mean=initial_state_mean)
@@ -66,10 +73,11 @@ def model_generator(avm, data, start):
     kf2 = kf2.em(measurements, n_iter=5)
     (smoothed_state_means, smoothed_state_covariances) = kf2.smooth(measurements)
     data_k = process_xy_back(smoothed_state_means[:, 0], smoothed_state_means[:, 2])
-
+    '''
     ## dfs search
     # avm = ArgoverseMap()
-    candidate_centerlines = avm.get_candidate_centerlines_for_traj(data_k[0:19], city_name_, viz=False)
+    #candidate_centerlines = avm.get_candidate_centerlines_for_traj(data_k[0:19], city_name_, viz=False)
+    candidate_centerlines = avm.get_candidate_centerlines_for_traj(data_[0:19], city_name_, viz=False)
     dfs = candidate_centerlines
 
     ## dfs pruning
@@ -118,16 +126,18 @@ def model_generator(avm, data, start):
     num_sample = 35  # ?num_sample代表啥,为啥给35
     up_to = 30  ## how many points for our prediction points
     track_length = 3000  # track length代表啥,为啥给3000
-    speed = cal_speed_list(data_k[0:19])
+    speed = cal_speed_list(data_[0:19])
     ob_ = np.array([[0, 0]])  # ？假设没有障碍？
     if speed[-1] > 33:  ##this case we dont need planning just keep going!
         generate_trj = []
         for i in range(35):
             ratio = np.arange(0.5, 1, 0.0005)
-            m = inc_length(data_k[-3:-1], up_to=30, ratio=np.random.choice(
+            m = inc_length(data_[-3:-1], up_to=30, ratio=np.random.choice(
                 ratio))  ##becase we are not sure about the acc, so i sample the gradient
             generate_trj.append(m)
     else:
+        pass
+    '''
         print("num of centerline:", len(input))
         for j in range(len(input)):
             all_frenet_begin = time.time()
@@ -179,6 +189,8 @@ def model_generator(avm, data, start):
                         pass
 
                     else:
+                        pass
+                        
                         #                       #TODO:Line187-191
                         c_d = c_d
                         c_d_d = 0.0  # current lateral speed [m/s]
@@ -189,6 +201,7 @@ def model_generator(avm, data, start):
                         ys = []
 
                         tx, ty, tyaw, tc, csp = convert_to_frenet(prune_dfs_)  # 把车道线转化到frenet坐标系下
+                        
                         for k in range(sim_loop):  # ?为什么要循环sim_loop次
                             count_planning_num += 1
                             one_loop_begin = time.time()
@@ -243,6 +256,7 @@ def model_generator(avm, data, start):
                                 pass
                             else:
                                 generate_trj.append(inc_length(process_xy_back(xs, ys), up_to=up_to, ratio=0.2))
+                
             all_frenet_cost = time.time() - all_frenet_begin
             if count_planning_num == 0:
                 print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
@@ -251,6 +265,7 @@ def model_generator(avm, data, start):
                 print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
                       % (count_planning_num, all_frenet_cost, all_frenet_cost / count_planning_num))
     ## save data process here: cut line to the minimum predicted cl:
+    '''
     len_line = []
     for i in range(len(save_line)):
         len_line.append(len(save_line[i]))
@@ -305,7 +320,8 @@ if __name__ == "__main__":
             path, name_ext = os.path.split(path_name_ext)
             name, ext = os.path.splitext(name_ext)
             time_begin = time.time()
-            save_centerline, generate_traj = model_generator(avm, afl_.seq_df, 20)
+            #save_centerline, generate_traj = model_generator(avm, afl_.seq_df, 20)
+            save_centerline, generate_traj  = [],[]
             data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
             torch.save(data_dict, os.path.join(save_dir, name + ".path"))
             time_cost = time.time() - time_begin

@@ -1,7 +1,7 @@
 import os
-process_num = 4
-process_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data"
-save_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test_limit"
+process_num = 24
+process_dir = "/mnt/sda/queenie2/av1_dataset/train/data"#"/data/public/argoverse_data/train/data"#"/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data"
+save_dir = "./data_av1/save_train_frenet/train/"#"/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/test_limit"
 command_file_name = "train_command.sh"
 keyword = "train"
 filenum_list = [int(i.split(".")[0]) for i in os.listdir(process_dir)]
