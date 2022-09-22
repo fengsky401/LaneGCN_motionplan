@@ -27,7 +27,7 @@ ACCELERATE_SEARCH = 1
 SEARCH_SPEED = 10.0
 
 
-def model_generator(data,start):
+def model_generator(avm,data,start):
 
     city_name_, data_= process_input(data)
 
@@ -66,7 +66,7 @@ def model_generator(data,start):
     data_k=process_xy_back(smoothed_state_means[:, 0],smoothed_state_means[:, 2])
 
     ## dfs search
-    avm = ArgoverseMap()
+    #avm = ArgoverseMap()
     candidate_centerlines = avm.get_candidate_centerlines_for_traj(data_k[0:19], city_name_, viz=False)
     dfs=candidate_centerlines
 
@@ -125,9 +125,10 @@ def model_generator(data,start):
             m=inc_length(data_k[-3:-1],up_to=30,ratio=np.random.choice(ratio)) ##becase we are not sure about the acc, so i sample the gradient
             generate_trj.append(m)
     else:
-
+        print("num of centerline:",len(input))
         for j in range(len(input)):
             all_frenet_begin = time.time()
+            count_planning_num = 0
             if len(input[j])>30:
                 
                 for i in range(num_sample):
@@ -136,13 +137,7 @@ def model_generator(data,start):
                     # print(offset)
                     # offset=2
                     prune_dfs_=generate_offset(input[j][0:track_length],offset=offset)   #返回centerline的左右两个边界
-                    # print(len(prune_dfs_),len(input[j][0:1000]))
 
-
-
-                    # prune_dfs_=prune_dfs_new
-                    
-                    ## straight line, curve line deal:
                     
                     c_speed=speed[-1]
                     target_speed=sample_speed(speed[-1])   #?用最后一个时刻的速度随便猜一个target速度
@@ -191,21 +186,22 @@ def model_generator(data,start):
                         
                         tx, ty, tyaw, tc, csp = convert_to_frenet(prune_dfs_)   #把车道线转化到frenet坐标系下
                         for k in range(sim_loop):   #?为什么要循环sim_loop次
+                            count_planning_num+=1
                             one_loop_begin = time.time()
                             try:
                                 path = frenet_optimal_planning(
                                             csp, s0, c_speed, c_d, c_d_d, c_d_dd, ob=ob_,target_speed=target_speed)
-                                print("k:%d,s0:%f,c_speed:%f,c_d:%f,c_d_d:%f,c_d_dd:%f,target_speed:%f" %(k,s0,c_speed,c_d,c_d_d,c_d_dd,target_speed))
+                                #print("k:%d,s0:%f,c_speed:%f,c_d:%f,c_d_d:%f,c_d_dd:%f,target_speed:%f" %(k,s0,c_speed,c_d,c_d_d,c_d_dd,target_speed))
                             except:
-                                continue
+                                break
                             if path is None:
                                 break
 
-                            print("pathx:",path.x)
-                            print("pathy:",path.y)
+                            #print("pathx:",path.x)
+                            #print("pathy:",path.y)
 
                             once_time_cost = time.time() - one_loop_begin
-                            print("once time cost:",once_time_cost)
+                            #print("once time cost:",once_time_cost)
                             if path==None:
                                 # print('no path!')
                                 break
@@ -245,7 +241,12 @@ def model_generator(data,start):
                             else:
                                 generate_trj.append(inc_length(process_xy_back(xs,ys),up_to=up_to,ratio=0.2))
             all_frenet_cost = time.time() - all_frenet_begin
-            print("frenet cost in one centerline:",all_frenet_cost)
+            if count_planning_num ==0:
+                print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
+                      % (count_planning_num, all_frenet_cost, 0.0))
+            else:
+                print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
+                  %(count_planning_num,all_frenet_cost,all_frenet_cost/count_planning_num))
     ## save data process here: cut line to the minimum predicted cl:     
     len_line=[]              
     for i in range(len(save_line)):
@@ -270,6 +271,7 @@ if  __name__ == "__main__":
         os.makedirs(save_dir)
     #name=os.listdir(root_dir)
     Afl = ArgoverseForecastingLoader
+    avm = ArgoverseMap()
 
     afl = Afl(root_dir)
     print('Total number of sequences:', len(afl))
@@ -279,7 +281,7 @@ if  __name__ == "__main__":
         path, name_ext = os.path.split(path_name_ext)
         name, ext = os.path.splitext(name_ext)
         time_begin = time.time()
-        save_centerline,generate_traj = model_generator(afl_.seq_df,20)
+        save_centerline,generate_traj = model_generator(avm,afl_.seq_df,20)
         data_dict = {"save_centerline":save_centerline,"generate_traj":generate_traj}
         torch.save(data_dict,os.path.join(save_dir,name+".path"))
         time_cost = time.time() - time_begin
