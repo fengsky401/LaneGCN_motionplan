@@ -9,8 +9,8 @@ file_num = len(filenum_list)
 max_filenum = max(filenum_list)
 min_filenum = min(filenum_list)
 each_increment = max_filenum//process_num
-import torchaudio
-torchaudio.save()
+#import torchaudio
+#torchaudio.save()
 with open(command_file_name,"w") as f:
 
     for i in range(process_num):
