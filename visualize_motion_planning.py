@@ -101,8 +101,8 @@ def draw_map_path(traj_df,path_data,avm,plot_dir,path_name):
 
 if __name__ == "__main__":
     root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
-    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/save_train_frenet/train6_width7_time40-50_searchspeed_1.0'
-    plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/path_plot/train6_width7_time40-50_searchspeed_1.0"
+    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/feasible_traj'
+    plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/path_plot/train7_seperate_step"
     if not os.path.exists(plot_dir):
         os.makedirs(plot_dir)
 
