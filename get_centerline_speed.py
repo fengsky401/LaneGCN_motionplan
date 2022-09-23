@@ -134,7 +134,10 @@ if __name__ == "__main__":
             path, name_ext = os.path.split(path_name_ext)
             name, ext = os.path.splitext(name_ext)
             time_begin = time.time()
-            save_centerline, speed,raw_speed = centerline_speed(avm, afl_.seq_df, 20)
+            try:
+                save_centerline, speed,raw_speed = centerline_speed(avm, afl_.seq_df, 20)
+            except:
+                continue
             centerline_speed_data[name] = {"centerline":save_centerline,
                                            "speed":speed,
                                            "raw_speed":raw_speed}
