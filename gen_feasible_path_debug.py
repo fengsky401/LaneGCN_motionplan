@@ -1,13 +1,21 @@
-import torch
+#import torch
 import argparse
 import os
 import numpy as np
-from tqdm import tqdm
-
+#from tqdm import tqdm
+#import torch
 import time
-#from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction, \
-#    generate_offset, convert_to_frenet, close_list_index, cal_dist, cal_paral, cal_speed_list, inc_length
-#from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
+from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction, \
+    generate_offset, convert_to_frenet, close_list_index, cal_dist, cal_paral, cal_speed_list, inc_length
+from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
+
+cpu_num = 1 # 这里设置成你想运行的CPU个数
+os.environ ['OMP_NUM_THREADS'] = str(cpu_num)
+os.environ ['OPENBLAS_NUM_THREADS'] = str(cpu_num)
+os.environ ['MKL_NUM_THREADS'] = str(cpu_num)
+os.environ ['VECLIB_MAXIMUM_THREADS'] = str(cpu_num)
+os.environ ['NUMEXPR_NUM_THREADS'] = str(cpu_num)
+#torch.set_num_threads(cpu_num)
 
 ACCELERATE_SEARCH = 1
 SEARCH_SPEED = 10.0
@@ -30,6 +38,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
             generate_trj.append(m)
     else:
         print("num of centerline:", len(input))
+        
         for j in range(len(input)):
             all_frenet_begin = time.time()
             count_planning_num = 0
@@ -37,6 +46,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
 
                 for i in range(num_sample):
                     # print(j)
+                    begin_sample = time.time()
                     offset = np.round(np.random.choice(np.linspace(-2, 2, 9)),
                                       2)  # ？为啥随机取 ## sample the offset from (-lane/2,lane/2)
                     # print(offset)
@@ -69,16 +79,17 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                     y0 = prune_dfs_[0][1]
                     x2 = data_[start][0]
                     y2 = data_[start][1]
-
+                    
                     if (x1 - x0) * (y2 - y0) - (x2 - x0) * (y1 - y0) < 0:
                         c_d = -cal_dist(data_[start], prune_dfs_[
                             0])  # current lateral position [m] ## need to get from the current agent's postion offset has problem
                     else:
                         c_d = cal_dist(data_[start], prune_dfs_[0])
-
+                    print("each sample cost:",time.time()-begin_sample)
                     if abs(c_d) > 4:  # ？为什么c_d>4的时候不做motion planning
                         pass
-
+                    #print("each sample cost:",time.time()-begin_sample)
+                    
                     else:
                         #                       #TODO:Line187-191
                         c_d = c_d
@@ -88,8 +99,9 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                         sim_loop = track_length
                         xs = []
                         ys = []
-
+                        
                         tx, ty, tyaw, tc, csp = convert_to_frenet(prune_dfs_)  # 把车道线转化到frenet坐标系下
+                        ''' 
                         for k in range(sim_loop):  # ?为什么要循环sim_loop次
                             count_planning_num += 1
                             one_loop_begin = time.time()
@@ -102,9 +114,9 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                                 break
                             if path is None:
                                 break
-
+                            
                             once_time_cost = time.time() - one_loop_begin
-                            # print("once time cost:",once_time_cost)
+                            print("once time cost:",once_time_cost)
                             if path == None:
                                 # print('no path!')
                                 break
@@ -114,7 +126,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                                 ys = ys + path.y
                                 # print("Goal")
                                 break
-
+                            
                             if ACCELERATE_SEARCH == 1:
                                 s0 = s0 + (path.s[1] - s0) * SEARCH_SPEED
                                 c_d = c_d + (path.d[1] - c_d) * SEARCH_SPEED
@@ -131,6 +143,8 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                                 xs = xs + path.x  # 笛卡尔坐标系下x坐标
                                 ys = ys + path.y  # 笛卡尔坐标系下y坐标
                         # pre_x,pre_y=get_direction(process_xy_back(xs,ys))
+                        
+
                         if len(ys) > 2:  ## if we have find a path that is not none,
                             pre_x, pre_y = np.gradient(xs), np.gradient(ys)
                             # print(pre_x[0],pre_y[0])
@@ -151,6 +165,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
             else:
                 print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
                       % (count_planning_num, all_frenet_cost, all_frenet_cost / count_planning_num))
+                        '''    
     ## save data process here: cut line to the minimum predicted cl:
     len_line = []
     for i in range(len(save_line)):
@@ -176,27 +191,32 @@ if  __name__ == "__main__":
         args = parser.parse_args()
         return args
 
-
+    import pickle
     args = parse_args()
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
-
+    ct = None
+    with open("./data_av1/centerline_speed/test_150000_220000.pkl",'rb') as f:
+        ct = pickle.load(f)
+    print("after load")
     pre_file = args.pre_file
     save_dir = args.save_dir
     start_num = args.start_num
     end_num = args.end_num
-
-    centerline_speed_dict = torch.load(pre_file)
+    #torch.set_num_threads(1)
+    #centerline_speed_dict = torch.load(pre_file)
     for i in range(10000):
-        for key,value in tqdm(centerline_speed_dict.items()):
+        #for j in range(1000000):
+        for key,value in ct.items():
             if (int(key) > start_num) and (int(key) < end_num):
                 begin=time.time()
                 argo_id = key
-                save_centerline = value["centerline"]
+                save_centerline =value["centerline"]
                 speed = value["speed"]
                 raw_speed = value["raw_speed"]
+                #save_centerline, generate_traj = [],[]
                 save_centerline, generate_traj = gen_feasible_traj(save_centerline, speed, raw_speed,20)
                 data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
-                torch.save(data_dict, os.path.join(save_dir, argo_id + ".path"))
+                #torch.save(data_dict, os.path.join(save_dir, argo_id + ".path"))
                 print("time cost per scene:",time.time()-begin)
 
