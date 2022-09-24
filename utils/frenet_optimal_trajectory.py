@@ -261,9 +261,11 @@ def frenet_optimal_planning(csp, s0, c_speed, c_d, c_d_d, c_d_dd, ob,target_spee
 
 def generate_target_course(x, y):
     csp = cubic_spline_planner.Spline2D(x, y)
+    
     s = np.arange(0, csp.s[-1], 0.1)   #？为什么要以0.1为间隔
-
+    
     rx, ry, ryaw, rk = [], [], [], []
+    
     for i_s in s:
         ix, iy = csp.calc_position(i_s)
         rx.append(ix)
@@ -272,7 +274,6 @@ def generate_target_course(x, y):
         rk.append(csp.calc_curvature(i_s))
 
     return rx, ry, ryaw, rk, csp
-
 
 def main():
     print(__file__ + " start!!")

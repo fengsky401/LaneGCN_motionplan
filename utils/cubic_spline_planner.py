@@ -5,9 +5,13 @@ Author: Atsushi Sakai(@Atsushi_twi)
 
 """
 import math
-import numpy as np
+#import numpy as np
 import bisect
-
+import os
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
+import numpy as np
 
 class Spline:
     """
@@ -201,13 +205,14 @@ def main():  # pragma: no cover
     s = np.arange(0, sp.s[-1], ds)
 
     rx, ry, ryaw, rk = [], [], [], []
-    for i_s in s:
-        ix, iy = sp.calc_position(i_s)
-        rx.append(ix)
-        ry.append(iy)
-        ryaw.append(sp.calc_yaw(i_s))
-        rk.append(sp.calc_curvature(i_s))
-
+    for count in range(10000):
+        for i_s in s:
+            ix, iy = sp.calc_position(i_s)
+            rx.append(ix)
+            ry.append(iy)
+            ryaw.append(sp.calc_yaw(i_s))
+            rk.append(sp.calc_curvature(i_s))
+'''
     plt.subplots(1)
     plt.plot(x, y, "xb", label="input")
     plt.plot(rx, ry, "-r", label="spline")
@@ -231,8 +236,8 @@ def main():  # pragma: no cover
     plt.xlabel("line length[m]")
     plt.ylabel("curvature [1/m]")
 
-    plt.show()
-
+    #plt.show()
+'''
 
 if __name__ == '__main__':
     main()

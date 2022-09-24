@@ -1,0 +1,15 @@
+nohup python gen_feasible_path_debug.py --start_num 150000 --end_num 154666 >a_train_gen_0.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 154666 --end_num 159332 >a_train_gen_1.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 159332 --end_num 163998 >a_train_gen_2.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 163998 --end_num 168664 >a_train_gen_3.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 168664 --end_num 173330 >a_train_gen_4.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 173330 --end_num 177996 >a_train_gen_5.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 177996 --end_num 182662 >a_train_gen_6.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 182662 --end_num 187328 >a_train_gen_7.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 187328 --end_num 191994 >a_train_gen_8.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 191994 --end_num 196660 >a_train_gen_9.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 196660 --end_num 201326 >a_train_gen_10.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 201326 --end_num 205992 >a_train_gen_11.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 205992 --end_num 210658 >a_train_gen_12.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 210658 --end_num 215324 >a_train_gen_13.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --start_num 215324 --end_num 219990 >a_train_gen_14.out 2>&1 & 

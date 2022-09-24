@@ -1,14 +1,21 @@
 #import torch
 import argparse
 import os
+cpu_num = 1 # 这里设置成你想运行的CPU个数
+os.environ['OMP_NUM_THREADS'] = str(cpu_num)
+os.environ['OPENBLAS_NUM_THREADS'] = str(cpu_num)
+os.environ['MKL_NUM_THREADS'] = str(cpu_num)
+os.environ['VECLIB_MAXIMUM_THREADS'] = str(cpu_num)
+os.environ['NUMEXPR_NUM_THREADS'] = str(cpu_num)
+#torch.set_num_threads(cpu_num)
 import numpy as np
-#from tqdm import tqdm
+from tqdm import tqdm
 #import torch
 import time
 from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction, \
     generate_offset, convert_to_frenet, close_list_index, cal_dist, cal_paral, cal_speed_list, inc_length
 from utils.frenet_optimal_trajectory import generate_target_course, frenet_optimal_planning, calc_frenet_paths
-
+'''
 cpu_num = 1 # 这里设置成你想运行的CPU个数
 os.environ ['OMP_NUM_THREADS'] = str(cpu_num)
 os.environ ['OPENBLAS_NUM_THREADS'] = str(cpu_num)
@@ -16,9 +23,9 @@ os.environ ['MKL_NUM_THREADS'] = str(cpu_num)
 os.environ ['VECLIB_MAXIMUM_THREADS'] = str(cpu_num)
 os.environ ['NUMEXPR_NUM_THREADS'] = str(cpu_num)
 #torch.set_num_threads(cpu_num)
-
+'''
 ACCELERATE_SEARCH = 1
-SEARCH_SPEED = 10.0
+SEARCH_SPEED = 20.0
 
 def gen_feasible_traj(save_line,data_k,data_,start):
     input = save_line
@@ -85,7 +92,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                             0])  # current lateral position [m] ## need to get from the current agent's postion offset has problem
                     else:
                         c_d = cal_dist(data_[start], prune_dfs_[0])
-                    print("each sample cost:",time.time()-begin_sample)
+                    #print("each sample cost:",time.time()-begin_sample)
                     if abs(c_d) > 4:  # ？为什么c_d>4的时候不做motion planning
                         pass
                     #print("each sample cost:",time.time()-begin_sample)
@@ -101,7 +108,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                         ys = []
                         
                         tx, ty, tyaw, tc, csp = convert_to_frenet(prune_dfs_)  # 把车道线转化到frenet坐标系下
-                        ''' 
+                         
                         for k in range(sim_loop):  # ?为什么要循环sim_loop次
                             count_planning_num += 1
                             one_loop_begin = time.time()
@@ -116,7 +123,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                                 break
                             
                             once_time_cost = time.time() - one_loop_begin
-                            print("once time cost:",once_time_cost)
+                            #print("once time cost:",once_time_cost)
                             if path == None:
                                 # print('no path!')
                                 break
@@ -164,8 +171,7 @@ def gen_feasible_traj(save_line,data_k,data_,start):
                       % (count_planning_num, all_frenet_cost, 0.0))
             else:
                 print("%d planning iteration,frenet cost in one centerline:%f,average cost is %f"
-                      % (count_planning_num, all_frenet_cost, all_frenet_cost / count_planning_num))
-                        '''    
+                      % (count_planning_num, all_frenet_cost, all_frenet_cost / count_planning_num))    
     ## save data process here: cut line to the minimum predicted cl:
     len_line = []
     for i in range(len(save_line)):
@@ -184,10 +190,10 @@ def gen_feasible_traj(save_line,data_k,data_,start):
 if  __name__ == "__main__":
     def parse_args():
         parser = argparse.ArgumentParser(description='Evaluate the mmTransformer')
-        parser.add_argument('--pre_file', type=str, default="/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/centerline_speed/train/centerline_speed_0_60.pt")
+        parser.add_argument('--pre_file', type=str, default="./data_av1/centerline_speed/test_150000_220000.pkl")
         parser.add_argument('--save_dir', type=str, default="./data_av1/feasible_traj" )
-        parser.add_argument('--start_num', type=int, default=0)
-        parser.add_argument('--end_num', type=int, default=0)
+        parser.add_argument('--start_num', type=int, default=150000)
+        parser.add_argument('--end_num', type=int, default=220000)
         args = parser.parse_args()
         return args
 
@@ -196,7 +202,7 @@ if  __name__ == "__main__":
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
     ct = None
-    with open("./data_av1/centerline_speed/test_150000_220000.pkl",'rb') as f:
+    with open(args.pre_file,'rb') as f:
         ct = pickle.load(f)
     print("after load")
     pre_file = args.pre_file
@@ -205,18 +211,21 @@ if  __name__ == "__main__":
     end_num = args.end_num
     #torch.set_num_threads(1)
     #centerline_speed_dict = torch.load(pre_file)
-    for i in range(10000):
-        #for j in range(1000000):
-        for key,value in ct.items():
-            if (int(key) > start_num) and (int(key) < end_num):
-                begin=time.time()
-                argo_id = key
-                save_centerline =value["centerline"]
-                speed = value["speed"]
-                raw_speed = value["raw_speed"]
-                #save_centerline, generate_traj = [],[]
-                save_centerline, generate_traj = gen_feasible_traj(save_centerline, speed, raw_speed,20)
-                data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
-                #torch.save(data_dict, os.path.join(save_dir, argo_id + ".path"))
-                print("time cost per scene:",time.time()-begin)
+    for key,value in tqdm(ct.items()):
+        if (int(key) > start_num) and (int(key) < end_num):
+            begin=time.time()
+            argo_id = key
+            save_centerline =value["centerline"]
+            speed = value["speed"]
+            raw_speed = value["raw_speed"]
+            #save_centerline, generate_traj = [],[]
+            save_centerline, generate_traj = gen_feasible_traj(save_centerline, speed, raw_speed,20)
+            data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}
+            save_begin = time.time()
+            with open(os.path.join(save_dir, argo_id + ".path"),'wb') as fw:
+                pickle.dump(data_dict,fw)
+            
+            #torch.save(data_dict, os.path.join(save_dir, argo_id + ".path"))
+            print("save cost:",time.time()-save_begin)
+            print("time cost per scene:",time.time()-begin)
 

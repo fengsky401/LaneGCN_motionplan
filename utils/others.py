@@ -166,7 +166,7 @@ def convert_to_frenet(prune_dfs):
         x_.append(x[i])
         y_.append(y[i])
 
-
+    #tx, ty, tyaw, tc, csp = None,None,None,None,None
     tx, ty, tyaw, tc, csp = generate_target_course(x_, y_)
     
     return tx, ty, tyaw, tc, csp 
