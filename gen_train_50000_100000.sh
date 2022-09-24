@@ -1,0 +1,12 @@
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 50000 --end_num 54166 >a_train_gen_50000_100000_0.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 54166 --end_num 58332 >a_train_gen_50000_100000_1.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 58332 --end_num 62498 >a_train_gen_50000_100000_2.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 62498 --end_num 66664 >a_train_gen_50000_100000_3.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 66664 --end_num 70830 >a_train_gen_50000_100000_4.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 70830 --end_num 74996 >a_train_gen_50000_100000_5.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 74996 --end_num 79162 >a_train_gen_50000_100000_6.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 79162 --end_num 83328 >a_train_gen_50000_100000_7.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 83328 --end_num 87494 >a_train_gen_50000_100000_8.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 87494 --end_num 91660 >a_train_gen_50000_100000_9.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 91660 --end_num 95826 >a_train_gen_50000_100000_10.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_50000_100000.pkl  --start_num 95826 --end_num 100000  >a_train_gen_50000_100000_11.out 2>&1 & 
