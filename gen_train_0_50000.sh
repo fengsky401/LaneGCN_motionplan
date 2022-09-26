@@ -1,0 +1,12 @@
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 0 --end_num 4166 >a_train_gen_0_50000_0.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 4166 --end_num 8332 >a_train_gen_0_50000_1.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 8332 --end_num 12498 >a_train_gen_0_50000_2.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 12498 --end_num 16664 >a_train_gen_0_50000_3.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 16664 --end_num 20830 >a_train_gen_0_50000_4.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 20830 --end_num 24996 >a_train_gen_0_50000_5.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 24996 --end_num 29162 >a_train_gen_0_50000_6.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 29162 --end_num 33328 >a_train_gen_0_50000_7.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 33328 --end_num 37494 >a_train_gen_0_50000_8.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 37494 --end_num 41660 >a_train_gen_0_50000_9.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 41660 --end_num 45826 >a_train_gen_0_50000_10.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_0_50000.pkl  --start_num 45826 --end_num 50000 >a_train_gen_0_50000_11.out 2>&1 & 
