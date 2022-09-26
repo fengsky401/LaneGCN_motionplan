@@ -2,6 +2,7 @@ import os
 import argparse
 import pickle
 from tqdm import tqdm
+import shutil
 def parse_args():
     parser = argparse.ArgumentParser(description='Evaluate the mmTransformer')
     parser.add_argument('--root_dir', type=str, default="./data_av1/centerline_speed/test_150000_220000.pkl")
@@ -32,5 +33,8 @@ if __name__ == "__main__":
     fail_file_dict = {"fail_list":fail_file_list}
     if not os.path.exists("./data_av1/fail/"):
         os.makedirs("./data_av1/fail/")
+    for fn in fail_file_list:
+        shutil.copy(os.path.join(root_dir,fn+".csv"),os.path.join("./data_av1/fail/",fn+".csv"))
     with open("./data_av1/fail/fail_file_%d_%d.pkl" %(start_num,end_num),'wb') as f:
         pickle.dump(fail_file_dict,f)
+
