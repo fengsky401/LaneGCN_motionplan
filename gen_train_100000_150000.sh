@@ -1,0 +1,10 @@
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 100000 --end_num 105000 >a_train_gen_100000_150000_0.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 105000 --end_num 110000 >a_train_gen_100000_150000_1.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 110000 --end_num 115000 >a_train_gen_100000_150000_2.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 115000 --end_num 120000 >a_train_gen_100000_150000_3.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 120000 --end_num 125000 >a_train_gen_100000_150000_4.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 125000 --end_num 130000 >a_train_gen_100000_150000_5.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 130000 --end_num 135000 >a_train_gen_100000_150000_6.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 135000 --end_num 140000 >a_train_gen_100000_150000_7.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 140000 --end_num 145000 >a_train_gen_100000_150000_8.out 2>&1 & 
+nohup python gen_feasible_path_debug.py --pre_file ./data_av1/centerline_speed/centerline_speed_100000_150000.pkl --start_num 145000 --end_num 150000 >a_train_gen_100000_150000_9.out 2>&1 & 

@@ -135,7 +135,7 @@ if __name__ == "__main__":
             name, ext = os.path.splitext(name_ext)
             time_begin = time.time()
             try:
-                save_centerline, speed,raw_speed = centerline_speed(avm, afl_.seq_df, 20)
+                save_centerline, speed,raw_speed = centerline_speed(avm, afl_.seq_df, 19)
             except:
                 continue
             centerline_speed_data[name] = {"centerline":save_centerline,
