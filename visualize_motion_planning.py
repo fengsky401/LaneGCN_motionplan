@@ -6,13 +6,15 @@ from argoverse.map_representation.map_api import ArgoverseMap
 from utils.others import process_input, process_xy, sample_speed, process_xy_back, get_direction, prediction,generate_offset,convert_to_frenet,close_list_index,cal_dist,cal_paral,cal_speed_list,inc_length
 from utils.frenet_optimal_trajectory import generate_target_course,frenet_optimal_planning,calc_frenet_paths
 import os
+import pickle
 import warnings
 import matplotlib.pyplot as plt
-
+import math
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 from tqdm import tqdm
 import time
 import os
+import matplotlib.animation as animation
 
 import numpy as np
 
@@ -26,7 +28,7 @@ def get_nearby_lane_feature_ls(am, agent_df, obs_len, city_name, lane_radius):
 
     return nearby_lane_ids
 
-def draw_map_path(traj_df,path_data,avm,plot_dir,path_name):
+def draw_map_path(traj_df,path_data,avm,plot_dir,path_name,save_video = False):
     city_name_,data_ = process_input(traj_df)
     agent_df = None
 
@@ -71,14 +73,23 @@ def draw_map_path(traj_df,path_data,avm,plot_dir,path_name):
             label="centerline"
         )
 
+    history_offset =  data_[0:19][-1] - data_[0:19][0]
+    history_direction = history_offset/(history_offset[0]**2 + history_offset[1]**2)
+    history_scalar = math.sqrt(history_offset[0]**2 + history_offset[1]**2)
+    history_velocity = data_[1:20] - data_[0:19]
+    history_integration_length = 0
+    for c in range(19):
+        history_integration_length +=math.sqrt(history_velocity[c,0]**2 +history_velocity[c,1]**2)
+
+
     #Draw target history & Future
     plt.plot(data_[:20,0],data_[:20,1],"--",color="orange",alpha=1,linewidth=1,zorder=1,label="target history")
     plt.plot(data_[20:,0],data_[20:,1],"--",color="red",alpha=1,linewidth=1,zorder=1,label="target future trajectory")
 
     #Draw feasible path
     for feasible_traj in path_data['generate_traj']:
-        plt.plot(feasible_traj[:,0],
-                 feasible_traj[:,1],
+        plt.plot(feasible_traj[:10,0],
+                 feasible_traj[:10,1],
                  "--",
                  color="blue",
                  alpha=1,
@@ -86,6 +97,13 @@ def draw_map_path(traj_df,path_data,avm,plot_dir,path_name):
                  zorder=0,
                  label="feasible future trajectory")
 
+    plt.text(x_min + 20,
+             y_max - 20,
+             "history scalar:%f,\n history length:%f" % (history_scalar,history_integration_length),
+             fontsize=10,
+             verticalalignment="top",
+             horizontalalignment="right"
+             )
 
     handles, labels = plt.gca().get_legend_handles_labels()
     by_label = dict(zip(labels, handles))
@@ -97,12 +115,71 @@ def draw_map_path(traj_df,path_data,avm,plot_dir,path_name):
 
     plt.savefig(os.path.join(plot_dir,path_name+".png"))
     plt.close()
+
+    if save_video == True:
+        ims = []
+
+        for t in range(20):
+            fig = plt.figure(0, figsize=(8, 7))
+            #ax = fig.add_subplot()
+            x_min = np.min(lane_centerlines[:, :, 0])
+            x_max = np.max(lane_centerlines[:, :, 0])
+            y_min = np.min(lane_centerlines[:, :, 1])
+            y_max = np.max(lane_centerlines[:, :, 1])
+
+            plt.xlim(x_min, x_max)
+            plt.ylim(y_min, y_max)
+
+            for lane_cl in lane_centerlines:
+                plt.plot(
+                    lane_cl[:, 0],
+                    lane_cl[:, 1],
+                    "--",
+                    color="grey",
+                    alpha=1,
+                    linewidth=1,
+                    zorder=0,
+                    label="centerline"
+                )
+            for feasible_traj in path_data['generate_traj']:
+                plt.plot(feasible_traj[:, 0],
+                         feasible_traj[:, 1],
+                         "--",
+                         color="blue",
+                         alpha=1,
+                         linewidth=1,
+                         zorder=1,
+                         label="feasible future trajectory")
+            plt.plot(data_[20:, 0], data_[20:, 1], "--", color="red", alpha=1, linewidth=1, zorder=1,
+                     label="target future trajectory")
+            plt.plot(data_[t, 0], data_[t, 1], "o", color="orange", alpha=1, linewidth=1, zorder=2,
+                     label="target history")
+
+            plt.savefig(os.path.join(plot_dir,path_name+"_%d" %(t)+".png"))
+            plt.close()
+            #plt.show()
+
+
+            #im,= ax.plot(feasible_traj[t,0],feasible_traj[t,1])
+            # title = ax.text(0.5, 1.05, "time = {:.2f}s".format(t),
+            #                 size=plt.rcParams["axes.titlesize"],
+            #                 ha="center", transform=ax.transAxes, )
+            #plt.show()
+            #ims.append([im,title])
+            #plt.cla()
+
+        # ani = animation.ArtistAnimation(fig, ims, interval=50, blit=False)
+        # ani.save(os.path.join(plot_dir,path_name+".gif"), writer='pillow')
+        # plt.close()
+
+
+
     #print("city name:",city_name_)
 
 if __name__ == "__main__":
     root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data'
-    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/feasible_traj'
-    plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/path_plot/train7_seperate_step"
+    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train_normal_data_1008'
+    plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train_normal_data_1013_feasible10"
     if not os.path.exists(plot_dir):
         os.makedirs(plot_dir)
 
@@ -115,5 +192,7 @@ if __name__ == "__main__":
         map_file_name = os.path.join(root_dir,path_name+".csv")
         path_file_name = os.path.join(save_dir,path_name+".path")
         scene_info = afl.get(map_file_name)
-        path_info = torch.load(path_file_name)
-        draw_map_path(scene_info.seq_df,path_info,avm,plot_dir,path_name)
+        with open(path_file_name,'rb') as f:
+
+            path_info = pickle.load(f)#torch.load(path_file_name)
+        draw_map_path(scene_info.seq_df,path_info,avm,plot_dir,path_name,False)

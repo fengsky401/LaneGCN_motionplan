@@ -35,9 +35,9 @@ import utils.cubic_spline_planner as cubic_spline_planner
 SIM_LOOP = 500
 
 # Parameter
-MAX_SPEED = 40 # maximum speed [m/s] ## it was 100/3.6
-MAX_ACCEL = 8.0  # maximum acceleration [m/ss]
-MAX_CURVATURE = 3.0  # maximum curvature [1/m]
+MAX_SPEED = 400#40 # maximum speed [m/s] ## it was 100/3.6
+MAX_ACCEL = 80#8.0  # maximum acceleration [m/ss]
+MAX_CURVATURE = 300.0#3.0  # maximum curvature [1/m]
 MAX_ROAD_WIDTH = 1.9#3.8#7.0  # maximum road width [m]
 D_ROAD_W = 1.0  # road width sampling length [m]
 DT = 0.2  # time tick [s]

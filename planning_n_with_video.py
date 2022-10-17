@@ -16,15 +16,19 @@ from utils.others import process_input, process_xy, sample_speed, process_xy_bac
 from utils.frenet_optimal_trajectory import generate_target_course,frenet_optimal_planning,calc_frenet_paths
 import os
 import warnings
+from visualize_motion_planning import draw_map_path
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 from multiprocessing import Pool
 from itertools import product
 from tqdm import tqdm
 import time
+import math
+from PIL import Image
+from PIL import ImageSequence
 
 import pickle
 ACCELERATE_SEARCH = 1
-SEARCH_SPEED = 10.0
+SEARCH_SPEED = 1.0
 
 
 def model_generator(avm,data,start):
@@ -70,6 +74,15 @@ def model_generator(avm,data,start):
     candidate_centerlines = avm.get_candidate_centerlines_for_traj(data_k[0:19], city_name_, viz=False)
     dfs=candidate_centerlines
 
+    history_offset = data_k[0:19][-1] - data_k[0:19][0]
+    history_direction = history_offset/(history_offset[0]**2 + history_offset[1]**2)
+    history_scalar = math.sqrt(history_offset[0]**2 + history_offset[1]**2)
+    history_velocity = data_k[1:20] - data_k[0:19]
+    history_integration_length = 0
+    for c in range(19):
+        history_integration_length += math.sqrt(history_velocity[c,0]**2 +history_velocity[c,1]**2)
+
+    print("history_offset:",history_offset,"history_direction:",history_direction,"history_scalar:",history_scalar,'history_integration_length:',history_integration_length)
 
     ## dfs pruning
     dfs_save_p=[]
@@ -128,7 +141,7 @@ def model_generator(avm,data,start):
         generate_trj=[]
         for i in range(35):
             ratio=np.arange(0.5,1,0.0005)
-            m=inc_length(data_k[-3:-1],up_to=30,ratio=np.random.choice(ratio)) ##becase we are not sure about the acc, so i sample the gradient
+            m = inc_length(data_k[-3:-1],up_to=30,ratio=np.random.choice(ratio)) ##becase we are not sure about the acc, so i sample the gradient
             generate_trj.append(m)
     else:
         print("num of centerline:",len(input))
@@ -226,6 +239,8 @@ def model_generator(avm,data,start):
                                 break
 
                             if ACCELERATE_SEARCH == 1:
+                                if path.s_d[1] < 0:
+                                    continue
                                 s0 = s0 + (path.s[1]-s0)*SEARCH_SPEED
                                 c_d = c_d + (path.d[1] - c_d) * SEARCH_SPEED
                                 c_speed = c_speed + (path.s_d[1] - c_speed) *SEARCH_SPEED
@@ -252,6 +267,7 @@ def model_generator(avm,data,start):
                                 # generate_trj.append(process_xy_back(xs,ys))
                                 pass
                             else:
+                                #feasible_path =
                                 generate_trj.append(inc_length(process_xy_back(xs,ys),up_to=up_to,ratio=0.2))
             all_frenet_cost = time.time() - all_frenet_begin
             if count_planning_num ==0:
@@ -280,10 +296,14 @@ def multi_run_wrapper(args):
 
 if  __name__ == "__main__":
     ##set root_dir to the correct path to your dataset folder
-    root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection'
-    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection_path'
+    root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/none_motion_plan'
+    save_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/none_motion_plan_plan'
+    plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/none_motion_plan_video"
+
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
+    if not os.path.exists(plot_dir):
+        os.makedirs(plot_dir)
     #name=os.listdir(root_dir)
     Afl = ArgoverseForecastingLoader
     avm = ArgoverseMap()
@@ -304,9 +324,11 @@ if  __name__ == "__main__":
 
         name, ext = os.path.splitext(name_ext)
         argo_id = name
-        if not os.path.exists(os.path.join(save_dir, name + ".path")):
-            if os.path.exists(os.path.join(save_dir, argo_id + ".path")):
-                continue
+        if True:
+        #if not os.path.exists(os.path.join(save_dir, name + ".path")):
+            # if os.path.exists(os.path.join(save_dir, argo_id + ".path")):
+            #     continue
+            print("argo id:",argo_id)
             time_begin = time.time()
 
             save_centerline,generate_traj = model_generator(avm,afl_.seq_df,19)
@@ -315,12 +337,16 @@ if  __name__ == "__main__":
             with open(os.path.join(save_dir, argo_id + ".path"), 'wb') as fw:
                 pickle.dump(data_dict, fw)
 
-            #torch.save(data_dict,os.path.join(save_dir,name+".path"))
             time_cost = time.time() - time_begin
             print("time cost per scene:",time_cost)
 
+            draw_map_path(afl_.seq_df, data_dict, avm, plot_dir, name,True)
+            images = []
 
-
+            for i in range(20):
+                im = Image.open(os.path.join(plot_dir,name+"_%d" %(i)+".png"))
+                images.append(im)
+            images[0].save(os.path.join(plot_dir,argo_id+".gif"),save_all=True,loop=True,append_images=images[1:],duration=500)
 
 
 
