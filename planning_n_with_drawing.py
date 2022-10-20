@@ -149,10 +149,8 @@ def model_generator(avm,data,start):
             if len(input[j])>30:
 
                 for i in range(num_sample):
-                    # print(j)
                     offset= np.round(np.random.choice(np.linspace(-2,2,9)),2)  #？为啥随机取 ## sample the offset from (-lane/2,lane/2)
-                    # print(offset)
-                    # offset=2
+
                     try:
                         prune_dfs_=generate_offset(input[j][0:track_length],offset=offset)   #返回centerline的左右两个边界
                     except:
@@ -294,7 +292,7 @@ def multi_run_wrapper(args):
 
 if  __name__ == "__main__":
     ##set root_dir to the correct path to your dataset folder
-    root_dir = '//Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection'
+    root_dir = '/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection'
     save_dir = '//Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection_path'
     plot_dir = "/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/specialcase_short_history/badcase_reversedirection_path_vis2"
 
