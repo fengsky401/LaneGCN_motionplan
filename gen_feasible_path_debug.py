@@ -212,12 +212,9 @@ if  __name__ == "__main__":
     #torch.set_num_threads(1)
     #centerline_speed_dict = torch.load(pre_file)
     for key,value in tqdm(ct.items()):
-<<<<<<< HEAD
         argo_id = key
         if os.path.exists(os.path.join(save_dir, argo_id + ".path")):
             continue
-=======
->>>>>>> e6fdb08cc9e309ec43287335e5fc5c4c0d2be491
         if (int(key) >= start_num) and (int(key) < end_num):
             begin=time.time()
             argo_id = key
@@ -226,7 +223,7 @@ if  __name__ == "__main__":
             raw_speed = value["raw_speed"]
             #save_centerline, generate_traj = [],[]
             try:
-                save_centerline, generate_traj = gen_feasible_traj(save_centerline, speed, raw_speed,20)
+                save_centerline, generate_traj = gen_feasible_traj(save_centerline, speed, raw_speed,19)
             except:
                 continue
             data_dict = {"save_centerline": save_centerline, "generate_traj": generate_traj}

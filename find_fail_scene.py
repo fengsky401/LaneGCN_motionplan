@@ -31,10 +31,11 @@ if __name__ == "__main__":
             else:
                 fail_file_list.append(fn)
     fail_file_dict = {"fail_list":fail_file_list}
-    if not os.path.exists("./data_av1/fail/"):
-        os.makedirs("./data_av1/fail/")
+    if not os.path.exists("./data_av1/fail_val_1007/"):
+        os.makedirs("./data_av1/fail_val_1007/")
+    #root_dir = "/data2/queenie/av1_data/train/data" 
     for fn in fail_file_list:
-        shutil.copy(os.path.join(root_dir,fn+".csv"),os.path.join("./data_av1/fail/",fn+".csv"))
-    with open("./data_av1/fail/fail_file_%d_%d.pkl" %(start_num,end_num),'wb') as f:
+        shutil.copy(os.path.join(root_dir,fn+".csv"),os.path.join("./data_av1/fail_val_1007/",fn+".csv"))
+    with open("./data_av1/fail_val_1007/fail_file_%d_%d.pkl" %(start_num,end_num),'wb') as f:
         pickle.dump(fail_file_dict,f)
 

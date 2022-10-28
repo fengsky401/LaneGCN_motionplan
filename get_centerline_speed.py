@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
         parser = argparse.ArgumentParser(description='Evaluate the mmTransformer')
         parser.add_argument('--root_dir', type=str, default='/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/train/data')
-        parser.add_argument('--save_dir', type=str, default='/Users/queenie/Documents/LaneGCN_Tianyu/data_av1/centerline_speed/train' )
+        parser.add_argument('--save_dir', type=str, default='./data_av1/centerline_speed/train' )
         parser.add_argument('--start_num', type=int, default=0)
         parser.add_argument('--end_num', type=int, default=60)
 
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     centerline_speed_data = {}
     for path_name_ext in tqdm(afl.seq_list):
         single_num = path_name_ext.parts[-1].split(".")[0]
-        if (int(single_num) > start_num) and (int(single_num) < end_num):
+        if (int(single_num) >= start_num) and (int(single_num) < end_num):
             afl_ = afl.get(path_name_ext)
             path, name_ext = os.path.split(path_name_ext)
             name, ext = os.path.splitext(name_ext)

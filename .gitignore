@@ -1,3 +1,4 @@
+*.sh
 utils/__pycache__/
 *.out
 data_av1/*
