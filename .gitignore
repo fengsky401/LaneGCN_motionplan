@@ -1,3 +1,9 @@
+__pycache__/
+fail_val/
+fail_val_plan/
+fail_val_visualization/
+feasible_traj_val.tgz
+
 *.sh
 utils/__pycache__/
 *.out
